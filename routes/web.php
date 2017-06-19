@@ -78,9 +78,9 @@ $app->post('/', function () use ($app, $botApi) {
 
     try {
         $bot = new \TelegramBot\Api\Client(env('BOT_TOKEN'));
-$content = file_get_contents('php://input');
-        $body = json_decode($content, true);
-        throw new \Exception((string)$content, 500);
+// $content = file_get_contents('php://input');
+        // $body = json_decode($content, true);
+        // throw new \Exception((string)$content, 500);
         $bot->shippingQuery(function ($query) use ($bot, $botApi) {
             // $botApi->answerShippingQuery($query->getId(), true, [
             //     [
