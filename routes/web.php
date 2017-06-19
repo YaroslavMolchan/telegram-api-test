@@ -84,7 +84,7 @@ $app->post('/', function () use ($app, $botApi) {
                 [
                     'id' => 'np',
                     'title' => 'Nova Poshta',
-                    [
+                    'prices' => [
                         [
                             'label' => 'Main',
                             'amount' => 4444
