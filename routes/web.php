@@ -79,20 +79,20 @@ $app->post('/', function () use ($app, $botApi) {
     try {
         $bot = new \TelegramBot\Api\Client(env('BOT_TOKEN'));
 
-        $bot->shippingQuery(function ($update) use ($bot, $botApi) {
-            $callback = $update->getShippingQuery();
-            $botApi->answerShippingQuery($callback->getId(), true, [
-                [
-                    'id' => 'np',
-                    'title' => 'Nova Poshta',
-                    [
-                        [
-                            'label' => 'Main',
-                            'amount' => 4444
-                        ]
-                    ]
-                ]
-            ]);
+        $bot->shippingQuery(function ($query) use ($bot, $botApi) {
+            // $botApi->answerShippingQuery($query->getId(), true, [
+            //     [
+            //         'id' => 'np',
+            //         'title' => 'Nova Poshta',
+            //         [
+            //             [
+            //                 'label' => 'Main',
+            //                 'amount' => 4444
+            //             ]
+            //         ]
+            //     ]
+            // ]);
+            $botApi->answerShippingQuery($query->getId(), false, [], 'Error message');
         });
 
         $bot->preCheckoutQuery(function ($query) use ($bot, $botApi) {
