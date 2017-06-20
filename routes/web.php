@@ -103,9 +103,8 @@ $app->post('/', function () use ($app, $botApi) {
             ]);
         });
 
-        $bot->preCheckoutQuery(function ($update) use ($bot, $botApi) {
-            $callback = $update->getPreCheckoutQuery();
-            $botApi->answerPreCheckoutQuery($callback->getId(), true);
+        $bot->preCheckoutQuery(function ($query) use ($bot, $botApi) {
+            $botApi->answerPreCheckoutQuery($query->getId(), true);
         });
 
         $bot->run();
