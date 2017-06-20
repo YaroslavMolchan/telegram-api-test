@@ -69,14 +69,6 @@ $app->get('/2', function () use ($app, $botApi) {
         [
             ['label' => 'price1', 'amount' => 999999]
         ],
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
         true
     );
 });
