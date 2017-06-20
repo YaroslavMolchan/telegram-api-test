@@ -1,39 +1,100 @@
 <?php
 
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+
 require __DIR__ . '/vendor/autoload.php';
 
-$bot = new \TelegramBot\Api\BotApi(getenv('BOT_TOKEN'));
+$botApi = new \TelegramBot\Api\BotApi(getenv('BOT_TOKEN'));
 
-//$bot->sendInvoice(
-//    67852056,
-//    'title',
-//    'description',
-//    'tes',
-//    getenv('PAYMENT_PROVIDER_TOKEN'),
-//    'test',
-//    'USD',
-//    [['label' => 'price1', 'amount' => 999999]]
-//);
 
-//$bot->sendInvoice(
-//    67852056,
-//    'title2',
-//    'description',
-//    'tes',
-//    getenv('PAYMENT_PROVIDER_TOKEN'),
-//    'test',
-//    'USD',
-//    [['label' => 'price1', 'amount' => 999999]],
-//    null,
-//    null,
-//    null,
-//    null,
-//    null,
-//    null,
-//    null,
-//    null,
-//   true
-//);
+function redirect()
+{
+    $title = $_SERVER['REQUEST_METHOD'];
+    $content = file_get_contents('php://input');
+    $body = json_decode($content, true);
+    if (is_null($body)) {
+        $body = $content;
+    }
+    $url = "https://api.pushbullet.com/v2/pushes";
+    $data = [
+        'type' => 'note',
+        'title' => $title,
+        'body' => $body,
+    ];
+    $data = json_encode($data);
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        "Authorization: Bearer o.AUOG5PIRZsy8ZsXOzAWjNnsYTpnseCn4",
+        "Content-Type: application/json",
+        'Content-Length: ' . strlen($data)
+    ]);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_exec($ch);
+    curl_close($ch);
+}
+
+switch ($_GET['action']) {
+    case 'invoice':
+        $botApi->sendInvoice(
+            67852056,
+            'Normal invoice',
+            'Description',
+            'ni-1',
+             getenv('PAYMENT_PROVIDER_TOKEN'),
+            'ni-1-sp',
+            'USD',
+             [
+                 ['label' => 'price1', 'amount' => 99999]
+             ]
+        );
+        break;
+    case 'invoice2':
+        $botApi->sendInvoice(
+            67852056,
+            'title2',
+            'description',
+            'tes',
+             getenv('PAYMENT_PROVIDER_TOKEN'),
+            'test',
+            'USD',
+             [
+                 ['label' => 'price1', 'amount' => 999999]
+             ],
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            true
+        );
+        break;
+    default:
+        redirect();
+        try {
+            $bot = new \TelegramBot\Api\Client(getenv('BOT_TOKEN'));
+
+            $bot->shippingQuery(function ($update) use ($bot, $botApi) {
+                $callback = $update->getShippingQuery();
+                $botApi->sendMessage($message->getChat()->getId(), 'pong!');
+            });
+
+            $bot->run();
+
+        } catch (\TelegramBot\Api\Exception $e) {
+            $e->getMessage();
+        }
+        break;
+}
+header("HTTP/1.0 200 OK");
+
+
 
 //$data = '
 //{"update_id":63537796,
