@@ -81,8 +81,38 @@ $app->get('/2', function () use ($app, $botApi) {
     );
 });
 
-$app->post('/', function () use ($app) {
+$app->post('/', function () use ($app, $botApi) {
     redirectRequest();
+
+    try {
+        $bot = new \TelegramBot\Api\Client(env('BOT_TOKEN'));
+
+        $bot->shippingQuery(function ($update) use ($bot, $botApi) {
+            $callback = $update->getShippingQuery();
+            $botApi->answerShippingQuery($callback->getId(), true, [
+                [
+                    'id' => 'np',
+                    'title' => 'Nova Poshta',
+                    [
+                        [
+                            'label' => 'Main',
+                            'amount' => 4444
+                        ]
+                    ]
+                ]
+            ]);
+        });
+
+        $bot->preCheckoutQuery(function ($update) use ($bot, $botApi) {
+            $callback = $update->getPreCheckoutQuery();
+            $botApi->answerPreCheckoutQuery($callback->getId(), true);
+        });
+
+        $bot->run();
+
+    } catch (\TelegramBot\Api\Exception $e) {
+        $e->getMessage();
+    }
 
     return 'post';
 });
