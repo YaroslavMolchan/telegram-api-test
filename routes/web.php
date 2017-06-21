@@ -43,33 +43,39 @@ function redirectRequest()
 $botApi = new \TelegramBot\Api\BotApi(env('BOT_TOKEN'));
 
 $app->get('/1', function () use ($app, $botApi) {
+    $botApi = new \TelegramBot\Api\BotApi(env('BOT_TOKEN'));
+
     $botApi->sendInvoice(
-        67852056,
-        'Normal invoice',
-        'Description',
-        'ni-1',
-         env('PAYMENT_PROVIDER_TOKEN'),
-        'ni-1-sp',
-        'USD',
+        67852056, // ID получателя, взять его можно во время входящего вебхука от этого пользователя
+        'Powerball', // Название продукта
+        'Новая модель Powerball Classic. От старой модели отличается обновленным дизайном: стильный синий корпус, белый ротор, новое модерн лого.', // Описание продукта
+        'powerball-classic', // Пишем свою внутренюю ID платежа, что либо по этому значению потом будете понимать что покупают
+        env('PAYMENT_PROVIDER_TOKEN'), // Токен платежной системы, получить можно у @Botfather
+        'pb-classic', // Начальный параметр который будет использован для генерации платежа
+        'UAH', // Валюта в которой будет оплачиваться товар
         [
-            ['label' => 'price1', 'amount' => 99999]
+            ['label' => 'Powerball 250Hz Classic Blue', 'amount' => 55100], //Массив цен, пользователь выберет только одну цену
+            ['label' => 'Powerball 250Hz Pro Blue', 'amount' => 79600],
+            ['label' => 'Powerball 280Hz Autostart', 'amount' => 146400]
         ]
     );
 });
 
 $app->get('/2', function () use ($app, $botApi) {
     $botApi->sendInvoice(
-        67852056,
-        'title2',
-        'description',
-        'tes',
-         env('PAYMENT_PROVIDER_TOKEN'),
-        'test',
-        'USD',
+        67852056, // ID получателя, взять его можно во время входящего вебхука от этого пользователя
+        'Powerball', // Название продукта
+        'Новая модель Powerball Classic. От старой модели отличается обновленным дизайном: стильный синий корпус, белый ротор, новое модерн лого.', // Описание продукта
+        'powerball-classic', // Пишем свою внутренюю ID платежа, что либо по этому значению потом будете понимать что покупают
+        env('PAYMENT_PROVIDER_TOKEN'), // Токен платежной системы, получить можно у @Botfather
+        'pb-classic', // Начальный параметр который будет использован для генерации платежа
+        'UAH', // Валюта в которой будет оплачиваться товар
         [
-            ['label' => 'price1', 'amount' => 999999]
+            ['label' => 'Powerball 250Hz Classic Blue', 'amount' => 55100], //Массив цен, пользователь выберет только одну цену
+            ['label' => 'Powerball 250Hz Pro Blue', 'amount' => 79600],
+            ['label' => 'Powerball 280Hz Autostart', 'amount' => 146400]
         ],
-        true
+        true // Указываем в том случае если цена может измениться в зависимости от доставки
     );
 });
 
@@ -80,22 +86,40 @@ $app->post('/', function () use ($app, $botApi) {
         $bot = new \TelegramBot\Api\Client(env('BOT_TOKEN'));
 
         $bot->shippingQuery(function ($query) use ($bot, $botApi) {
-            $botApi->answerShippingQuery($query->getId(), true, [
+            //Собираем информацию о способах доставки и ценах, делаем что-то ещё и отправляем ответ:
+            $botApi->answerShippingQuery(
+                $query->getId(), // уникальное id query который пришел на вебхук
+                true, // отвечаем что всё хорошо и отправляем массив вариантов доставки
                 [
-                    'id' => 'np',
-                    'title' => 'Nova Poshta',
-                    'prices' => [
-                        [
-                            'label' => 'Main',
-                            'amount' => 4444
+                    [
+                        'id' => 'np',
+                        'title' => 'Новая почта',
+                        'prices' => [
+                            [
+                                'label' => 'На склад',
+                                'amount' => 4000
+                            ],
+                            [
+                                'label' => 'Домой',
+                                'amount' => 6000
+                            ]
+                        ]
+                    ],
+                    [
+                        'id' => 'up',
+                        'title' => 'Укрпочта',
+                        'prices' => [
+                            [
+                                'label' => 'В отделение',
+                                'amount' => 2000
+                            ]
                         ]
                     ]
-                ]
-            ]);
+                ]);
         });
 
         $bot->preCheckoutQuery(function ($query) use ($bot, $botApi) {
-            $botApi->answerPreCheckoutQuery($query->getId(), true);
+            $botApi->answerPreCheckoutQuery($query->getId(), true); //Говорим что всё хорошо, товар есть на складе и готовы отправить
         });
 
         $bot->run();
