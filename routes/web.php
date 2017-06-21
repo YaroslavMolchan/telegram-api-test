@@ -97,10 +97,6 @@ $app->post('/', function () use ($app, $botApi) {
                             [
                                 'label' => 'На склад',
                                 'amount' => 4000
-                            ],
-                            [
-                                'label' => 'Домой',
-                                'amount' => 6000
                             ]
                         ]
                     ],
