@@ -75,7 +75,8 @@ $app->get('/2', function () use ($app, $botApi) {
             ['label' => 'Powerball 250Hz Pro Blue', 'amount' => 79600],
             ['label' => 'Powerball 280Hz Autostart', 'amount' => 146400]
         ],
-        true // Указываем в том случае если цена может измениться в зависимости от доставки
+        true, // Указываем в том случае если цена может измениться в зависимости от доставки,
+        'https://golloscdn.com/20565/Prod/2408816/powerball-classic-blue2.jpg' // Фото продукта
     );
 });
 
