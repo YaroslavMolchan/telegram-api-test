@@ -79,14 +79,8 @@ $app->get('/2', function () use ($app, $botApi) {
 });
 
 $app->get('/3', function () use ($app, $botApi) {
-    $botApi->sendMessage(
-        67852056, // ID получателя, взять его можно во время входящего вебхука от этого пользователя
-        'test',
-        null,
-        false,
-        null,
-        [
-            'inline_keyboard' => [
+$keyboard = new \TelegramBot\Api\Types\Inline\InlineKeyboardMarkup(
+            [
                 [
                     'text' => '111',
                     'callback_data' => '1123'
@@ -96,7 +90,14 @@ $app->get('/3', function () use ($app, $botApi) {
                     'switch_inline_query' => '1123'
                 ]
             ]
-        ]
+        );
+    $botApi->sendMessage(
+        67852056, // ID получателя, взять его можно во время входящего вебхука от этого пользователя
+        'test',
+        null,
+        false,
+        null,
+        $keyboard
     );
 });
 $app->post('/', function () use ($app, $botApi) {
