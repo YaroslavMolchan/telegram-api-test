@@ -81,6 +81,7 @@ $app->get('/2', function () use ($app, $botApi) {
 $app->get('/3', function () use ($app, $botApi) {
 $keyboard = new \TelegramBot\Api\Types\Inline\InlineKeyboardMarkup(
             [
+            [
                 [
                     'text' => '111',
                     'callback_data' => '1123'
@@ -89,6 +90,7 @@ $keyboard = new \TelegramBot\Api\Types\Inline\InlineKeyboardMarkup(
                     'text' => '111',
                     'switch_inline_query' => '1123'
                 ]
+            ]
             ]
         );
     $botApi->sendMessage(
