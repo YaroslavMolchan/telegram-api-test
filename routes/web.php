@@ -109,13 +109,13 @@ $app->post('/', function () use ($app, $botApi) {
         $bot = new \TelegramBot\Api\Client(env('BOT_TOKEN'));
 
 
-        $bot->on(function(\TelegramBot\Api\Types\Update $update) use ($bot){
-            $content = file_get_contents('php://input');
-            $body = json_decode($content, true);
-            throw new \Exception((string)$content, 500);
-        }, function($message){
-            return true;
-        });
+        // $bot->on(function(\TelegramBot\Api\Types\Update $update) use ($bot){
+        //     $content = file_get_contents('php://input');
+        //     $body = json_decode($content, true);
+        //     throw new \Exception((string)$content, 500);
+        // }, function($message){
+        //     return true;
+        // });
 
 
         $bot->shippingQuery(function ($query) use ($bot, $botApi) {
