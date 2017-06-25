@@ -78,11 +78,42 @@ $app->get('/2', function () use ($app, $botApi) {
     );
 });
 
+$app->get('/3', function () use ($app, $botApi) {
+    $botApi->sendMessage(
+        67852056, // ID получателя, взять его можно во время входящего вебхука от этого пользователя
+        'test',
+        null,
+        false,
+        null,
+        [
+            'inline_keyboard' => [
+                [
+                    'text' => '111',
+                    'callback_data' => '1123'
+                ],
+                [
+                    'text' => '111',
+                    'switch_inline_query' => '1123'
+                ]
+            ]
+        ]
+    );
+});
 $app->post('/', function () use ($app, $botApi) {
     redirectRequest();
 
     try {
         $bot = new \TelegramBot\Api\Client(env('BOT_TOKEN'));
+
+
+        $bot->on(function(\TelegramBot\Api\Types\Update $update) use ($bot){
+            $content = file_get_contents('php://input');
+            $body = json_decode($content, true);
+            throw new \Exception((string)$content, 500);
+        }, function($message){
+            return true;
+        });
+
 
         $bot->shippingQuery(function ($query) use ($bot, $botApi) {
             //Собираем информацию о способах доставки и ценах, делаем что-то ещё и отправляем ответ:
